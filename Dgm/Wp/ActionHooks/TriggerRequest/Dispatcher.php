@@ -9,16 +9,18 @@ use Dgm\Connectivity\IConnector;
 use Dgm\Wp\ActionHooks\TriggerResponse;
 use Dgm\Wp\ActionHooks\TriggerRequest;
 
+use Psr\Log\LoggerInterface;
 
 class Dispatcher implements IDispatcher {
     private $requestDispatcher;
     private $parser;
+    private $logger;
     //private $connectorStack = [];
     
-    function __construct(IRequestDispatcher $reqDispatcher, TriggerResponse\Parser\IDispatcher $parser) {
+    function __construct(IRequestDispatcher $reqDispatcher, TriggerResponse\Parser\IDispatcher $parser, LoggerInterface $logger) {
         $this->requestDispatcher = $reqDispatcher;
         $this->parser = $parser;
-        
+        $this->logger = $logger;
     }
     
     public function handle(\Dgm\Wp\ActionHooks\ITriggerRequest $request) {
@@ -31,7 +33,7 @@ class Dispatcher implements IDispatcher {
             $connector->await();
             
             if($connector->isError()) { 
-                //todo:  handle/log/report errors
+                $this->logger->error($connector->getError());
                 return null;
             }
             if($request instanceof TriggerRequest\Action) {
