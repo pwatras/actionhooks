@@ -3,3 +3,4 @@ dev.php
 nbproject
 composer.lock
 triggers.json
+*.log
