@@ -1,7 +1,7 @@
 <?php
 
 namespace Dgm\Wp\ActionHooks\EnvValidators;
-use Dgm\EnvValidatior\IValidator;
+use Dgm\EnvValidator\IValidator;
 
 class CurlExtension implements IValidator {
     public function getLabel(): string {

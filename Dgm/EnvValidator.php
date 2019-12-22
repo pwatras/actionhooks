@@ -8,7 +8,7 @@ class EnvValidator implements IEnvValidator {
     private $hasErrors = false;
     private $hasWarnings = false;
     private $messages = [];
-    public function registerValidator(EnvValidatior\IValidator $validator) {
+    public function registerValidator(EnvValidator\IValidator $validator) {
         array_push($this->validators,$validator);
     }
     
@@ -70,7 +70,7 @@ class EnvValidator implements IEnvValidator {
     }
 
     private function runValidators() {
-        array_walk($this->validators, function(EnvValidatior\IValidator $validator){
+        array_walk($this->validators, function(EnvValidator\IValidator $validator){
             if($validator->validate()) { return; }
             //has error/warning
             if($validator->isRequired()) {

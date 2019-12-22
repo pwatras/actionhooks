@@ -1,5 +1,5 @@
 <?php
-namespace Dgm\EnvValidatior;
+namespace Dgm\EnvValidator;
 
 interface IValidator {
     public function getLabel():string;
