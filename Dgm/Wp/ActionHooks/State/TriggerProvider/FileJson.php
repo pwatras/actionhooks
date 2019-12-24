@@ -12,7 +12,6 @@ use Dgm\Wp\ITrigger;
 use Dgm\Wp\IHook;
 use Dgm\Wp\Trigger;
 use Dgm\Wp\Hook;
-
 class FileJson implements ITriggerProvider {
     private $path;
     private $dispatcherInstance;
@@ -60,13 +59,16 @@ class FileJson implements ITriggerProvider {
             case IHook::HOOK_ACTION:
                 $hook = new Hook\Action($hookHandle, $argCount, $priority);
                 //todo: configurable connector
-                return new Trigger\Action($hook, $address,$this->getDispatcherInstance(),$opts);
+                //return new Trigger\Action($hook, $address,$this->getDispatcherInstance(),$opts);
+                break;
             case IHook::HOOK_FILTER:
                 $hook = new Hook\Filter($hookHandle, $argCount, $priority);
-                return new Trigger\Filter($hook, $address,$this->getDispatcherInstance(), $opts);
+                //return new Trigger\Filter($hook, $address,$this->getDispatcherInstance(), $opts);
+                break;
             default:
                 throw new \Exception('Unexpected hook type '.$item['type']);
         }
+        return Trigger\Factory::create($hook, $address, $this->getDispatcherInstance(), $opts);
     }
     
     /*protected function getDefaultConnector(string $connectionType): \Dgm\Connectivity\IConnector {

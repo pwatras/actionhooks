@@ -1,27 +1,32 @@
 <?php
 namespace Dgm\Wp\Trigger;
 use Dgm\Wp\IHook;
-use Dgm\Wp\IConnector;
-use Dgm\Wp\IRequestDispatcher;
+use Dgm\Wp\ActionHooks\TriggerRequest\IDispatcher;
 use Dgm\Wp\ITrigger;
 use Dgm\IOpts;
+use Dgm\Connectivity\Request\IAddress;
 
 abstract class Factory {
-    public static function create(IHook $hook, IConnector $connector, IRequestDispatcher $dispatcher,?IOpts $options = null): ITrigger {
-        if($hook->getType()== IHook::HOOK_FILTER && $connector->getType()== IConnector::ASYNC) {
-            throw new \Exception('Filter hooks cannot use async connections');
-        }
+    private static $inputDecorators = [];
+    
+    public static function create(IHook $hook, IAddress $address,IDispatcher $dispatcher,?IOpts $opts = null): ITrigger {
         switch($hook->getType()) {
             case IHook::HOOK_ACTION:
-                $trigger = new Action($hook,$connector,$dispatcher,$options);
+                $trigger = new Action($hook,$address,$dispatcher,$opts);
                 break;
             case IHook::HOOK_FILTER:
-                $trigger =  new Filter($hook,$connector,$dispatcher,$options);
+                $trigger =  new Filter($hook,$address,$dispatcher,$opts);
                 break;
             default:
                 throw new \Exception(__METHOD__.': unexpected IHook type');
         }
-        $trigger->decorateInput(new Decorator\PostArg());
+        array_walk(self::$inputDecorators,function(Decorator\IInputDecorator $decorator) use($trigger) {
+            $trigger->decorateInput($decorator);
+        });
         return $trigger;
+    }
+    
+    public static function addInputDecorator(Decorator\IInputDecorator $decorator) {
+        array_push(self::$inputDecorators,$decorator);
     }
 }
