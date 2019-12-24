@@ -8,6 +8,7 @@ use Dgm\Connectivity\Request\IAddress;
 
 abstract class Factory {
     private static $inputDecorators = [];
+    private static $outputDecorators = [];
     
     public static function create(IHook $hook, IAddress $address,IDispatcher $dispatcher,?IOpts $opts = null): ITrigger {
         switch($hook->getType()) {
@@ -23,10 +24,18 @@ abstract class Factory {
         array_walk(self::$inputDecorators,function(Decorator\IInputDecorator $decorator) use($trigger) {
             $trigger->decorateInput($decorator);
         });
+        array_walk(self::$outputDecorators,function(Decorator\IOutputDecorator $decorator) use($trigger){
+            $trigger->decorateOutput($decorator);
+            
+        });
         return $trigger;
     }
     
     public static function addInputDecorator(Decorator\IInputDecorator $decorator) {
         array_push(self::$inputDecorators,$decorator);
+    }
+    
+    public static function addOutputDecorator(Decorator\IOutputDecorator $decorator) {
+        array_push(self::$outputDecorators,$decorator);
     }
 }
