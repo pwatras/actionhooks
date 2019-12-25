@@ -2,6 +2,7 @@
 namespace Dgm\Wp\Trigger\Decorator;
 class WooProduct implements IInputDecorator {
     private static $isWooAvailable = null;
+    
     public function decorate(array $args):array {
         if(!self::isWooInstalled()) {
             return $args;
@@ -18,7 +19,10 @@ class WooProduct implements IInputDecorator {
         return [
             'product'=>$product,
             'name'=>$product->get_name(),
-            'price'=>$product->get_price()
+            'price'=>$product->get_price(),
+            'sale_price'=>$product->get_sale_price(),
+            'tax_class'=>$product->get_tax_class(),
+            'stock_status'=>$product->get_stock_status()
             //todo: add more basic product info    
                 
         ];
