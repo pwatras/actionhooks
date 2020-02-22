@@ -23,7 +23,8 @@ class HttpPost extends Http implements IConnector {
     public function call(IRequest $request) {
         $cli = self::getClient();
         //$this->promise = $cli->postAsync($uri)
-        $httpReq = new Request('POST',$request->getAddress()->toString(),[],$request->getContent());
+        $httpReq = new Request('POST',$request->getAddress()->toString(),['Content-type'=>'application/json'],$request->getContent());
+        var_dump($request->getContent());
         $this->promise = $cli->sendAsync($httpReq);
         $this->promise->then(
             function (ResponseInterface $res) {
